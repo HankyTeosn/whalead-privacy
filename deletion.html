@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>数据删除说明 - 鲸投（WhaleAd）</title>
+    <style>
+      :root {
+        --ink: #111827;
+        --muted: #6b7280;
+        --line: #e5e7eb;
+        --brand: #2563eb;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+          'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+        color: var(--ink);
+        background: #f9fafb;
+        line-height: 1.75;
+      }
+      .wrap {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 56px 24px 96px;
+      }
+      header {
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 24px;
+        margin-bottom: 32px;
+      }
+      h1 {
+        font-size: 30px;
+        margin: 0 0 8px;
+        letter-spacing: -0.5px;
+      }
+      .sub {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      h2 {
+        font-size: 18px;
+        margin: 36px 0 10px;
+      }
+      p, li { font-size: 15px; }
+      ul { padding-left: 22px; }
+      li { margin: 6px 0; }
+      .card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 28px 32px;
+      }
+      .tag {
+        display: inline-block;
+        background: #eff6ff;
+        color: var(--brand);
+        border-radius: 999px;
+        padding: 2px 12px;
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+      footer {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 13px;
+      }
+      code {
+        background: #f3f4f6;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+
+      a { color: var(--brand); text-underline-offset: 3px; }
+      a:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; }
+      code { overflow-wrap: anywhere; }
+      ol { padding-left: 22px; }
+      @media (max-width: 600px) {
+        .wrap { padding: 28px 16px 48px; }
+        .card { padding: 20px; }
+        h1 { font-size: 26px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="tag">数据删除</div>
+        <h1>鲸投（WhaleAd）数据删除说明</h1>
+        <p class="sub">最后更新：2026 年 11 月 19 日 · 适用于当前 Windows 桌面版</p>
+        <nav aria-label="隐私与数据删除"><a href="index.html">隐私政策</a></nav>
+      </header>
+      <main class="card">
+        <section aria-labelledby="revoke">
+          <h2 id="revoke">一、先在 Meta 撤销授权</h2>
+          <p>进入 Meta 设置中的“企业业务集成”或“应用和网站”，找到鲸投（WhaleAd），按平台提示移除或撤销授权。如授权由业务管理员配置，请联系该业务管理员撤销相应集成或访问权限。</p>
+          <p>撤销 Meta 授权和删除本机数据是两项独立操作；撤销后，本机保存的授权记录、任务与日志仍需另外清理。</p>
+        </section>
+        <section aria-labelledby="account">
+          <h2 id="account">二、删除鲸投内的授权记录</h2>
+          <p>在鲸投【账户与授权】中删除相应账户。此操作只去掉本机该授权记录，不等于在 Meta 撤销权限，也不代表清除全部数据库、任务、日志、设置或其它授权记录。</p>
+        </section>
+        <section aria-labelledby="local">
+          <h2 id="local">三、完全删除本机应用数据</h2>
+          <ol>
+            <li>退出鲸投，包括系统托盘中的后台进程，确认应用已停止运行。</li>
+            <li>删除当前实际使用的本机数据目录。默认目录为 <code>%APPDATA%\fb-ad-launcher</code>；旧版本可能使用 <code>%APPDATA%\FBAdLauncher</code>，如曾自设数据目录，应删除实际使用的自设目录。</li>
+            <li>如有多个旧目录或副本，分别核对并清理其中保留的鲸投数据。删除目录会移除其中的数据库、设置、任务和相关记录。</li>
+          </ol>
+          <p>卸载软件不等于删除本机配置和数据目录；仅卸载或仅删除授权记录，都不代表已经完成全部本机数据清理。</p>
+        </section>
+        <section aria-labelledby="copies">
+          <h2 id="copies">四、分别处理导出、备份与外部平台数据</h2>
+          <ul>
+            <li><strong>导出与备份：</strong>应用数据目录外的报表、素材副本、数据库备份及系统或同步工具保留的副本，需到各自保存位置单独管理和删除。</li>
+            <li><strong>Meta 广告与业务资产：</strong>已经提交给 Meta 的广告、素材、资产及平台报表，不会随本机目录删除或授权撤销而自动删除；需要时到 Meta 相应管理界面分别处理。删除本机数据也不会自动暂停已发布广告。</li>
+            <li><strong>可选 AI：</strong>已发送至所配置供应商或经本机代理转发的输入，不会因清理鲸投本机数据而自动从供应商处删除；相关请求需通过该供应商的渠道处理。</li>
+          </ul>
+          <p>外部服务的数据保留与删除以相应平台规则和实际处理结果为准；本说明不承诺固定完成时限。</p>
+        </section>
+        <section aria-labelledby="help">
+          <h2 id="help">五、删除问题与联系</h2>
+          <p>鲸投（WhaleAd）由个人开发者维护。需要协助删除数据时，请联系 <a href="mailto:yixiaoyu302@gmail.com">yixiaoyu302@gmail.com</a>。</p>
+          <p>联系时仅需说明希望撤销授权、删除本机记录或处理外部平台数据，以及已执行的步骤；不要求发送密码、访问令牌或广告账户敏感材料。本页没有上传表单。</p>
+          <p>有关处理的数据、网络通信和本机保存方式，请查看<a href="index.html">鲸投隐私政策</a>。</p>
+        </section>
+      </main>
+      <footer>鲸投（WhaleAd）Windows 桌面版</footer>
+    </div>
+  </body>
+</html>
