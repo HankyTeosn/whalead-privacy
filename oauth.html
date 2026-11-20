@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>授权完成 · 鲸投 Launcher</title>
+<style>
+  :root{--ink:#1a1d24;--muted:#6b7280;--line:#e5e7eb;--brand:#1f6feb;--ok:#0f9d58;--warn:#c2410c;--bg:#f7f8fa}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 -apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+       min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+  .card{width:100%;max-width:640px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:32px 34px;
+        box-shadow:0 8px 30px rgba(16,24,40,.07)}
+  h1{margin:0 0 6px;font-size:21px;letter-spacing:-.3px}
+  .sub{margin:0 0 22px;color:var(--muted);font-size:13.5px}
+  .state{display:flex;align-items:center;gap:9px;font-weight:600;margin-bottom:18px}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}
+  .ok .dot{background:var(--ok)} .err .dot{background:var(--warn)}
+  .ok{color:var(--ok)} .err{color:var(--warn)}
+  label{display:block;font-size:12.5px;color:var(--muted);margin:0 0 7px;letter-spacing:.02em}
+  textarea{width:100%;min-height:112px;resize:vertical;padding:12px 13px;border:1px solid var(--line);border-radius:9px;
+           font:12.5px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--ink);background:#fbfcfd;
+           word-break:break-all}
+  textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(31,111,235,.12)}
+  .row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  button{border:1px solid var(--line);background:#fff;color:var(--ink);padding:9px 18px;border-radius:9px;font-size:14px;
+         cursor:pointer;transition:.15s}
+  button:hover{border-color:#cfd4dc;background:#fafbfc}
+  button.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+  button.primary:hover{background:#1a5fd0}
+  .hint{margin-top:20px;padding:13px 15px;background:#f4f7fb;border:1px solid #e3ebf6;border-radius:9px;
+        font-size:13px;color:#39445a}
+  .hint b{color:var(--ink)}
+  .meta{margin-top:14px;font-size:12.5px;color:var(--muted)}
+  code{background:#f1f3f6;padding:1px 6px;border-radius:4px;font-size:12.5px}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>鲸投 Launcher · 授权结果</h1>
+  <p class="sub">你已完成 Facebook 授权。把下面的令牌复制发回给对接人即可，页面到此为止，不会保存任何东西。</p>
+
+  <div id="state" class="state"><span class="dot"></span><span id="stateText">正在读取授权结果…</span></div>
+
+  <div id="okBox" class="hidden">
+    <label for="tok">访问令牌（Access Token）</label>
+    <textarea id="tok" readonly spellcheck="false"></textarea>
+    <div class="row">
+      <button class="primary" id="copy">复制令牌</button>
+      <button id="reveal">显示 / 隐藏</button>
+    </div>
+    <div class="meta" id="meta"></div>
+    <div class="hint">
+      <b>这串东西等于你 Facebook 账号的临时钥匙。</b>只发给让你操作广告的人，别贴到群里、别截图发出去。
+      有效期约 1–2 小时，期间对方会把它换成长期令牌；过期了重新点一次授权链接就行。
+    </div>
+  </div>
+
+  <div id="errBox" class="hidden">
+    <div class="hint" id="errText"></div>
+    <div class="row"><button onclick="location.reload()">重新读取</button></div>
+  </div>
+
+  <div id="retryBox" class="hidden">
+    <div class="hint">
+      这个地址没带授权结果。请回到对接人给你的<b>授权链接</b>重新点一次；
+      如果你是从书签或历史记录打开的，那个链接已经失效了。
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var state = document.getElementById('state');
+  var stateText = document.getElementById('stateText');
+  var okBox = document.getElementById('okBox');
+  var errBox = document.getElementById('errBox');
+  var retryBox = document.getElementById('retryBox');
+  var tok = document.getElementById('tok');
+  var meta = document.getElementById('meta');
+  var errText = document.getElementById('errText');
+
+  function q(name) {
+    var m = new RegExp('[?&#]' + name + '=([^&]*)').exec(location.href);
+    return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : null;
+  }
+
+  function fail(title, detail) {
+    state.className = 'state err';
+    stateText.textContent = title;
+    errBox.classList.remove('hidden');
+    errText.innerHTML = detail;
+  }
+
+  var err = q('error_description') || q('error_message') || q('error');
+  if (err) {
+    fail('授权没有完成', 'Facebook 返回：<b>' + String(err).replace(/[<>]/g, '') + '</b><br>常见原因是你点了「取消」，或者这个账号没有该应用的访问权限。');
+    return;
+  }
+
+  var token = q('access_token');
+  var code = q('code');
+
+  if (!token && code) {
+    state.className = 'state err';
+    stateText.textContent = '拿到了授权码，但还需要换令牌';
+    errBox.classList.remove('hidden');
+    errText.innerHTML = '这条链接用的是授权码模式。把下面整段地址发回给对接人，由服务端换成令牌：<br><br><code style="word-break:break-all">' +
+      location.href.replace(/[<>]/g, '') + '</code>';
+    return;
+  }
+
+  if (!token) {
+    state.className = 'state';
+    stateText.textContent = '没有读到授权结果';
+    retryBox.classList.remove('hidden');
+    return;
+  }
+
+  state.className = 'state ok';
+  stateText.textContent = '授权成功';
+  tok.value = token;
+  okBox.classList.remove('hidden');
+
+  var bits = [];
+  var exp = q('expires_in');
+  if (exp) {
+    var h = Math.round(parseInt(exp, 10) / 3600);
+    bits.push('有效期约 ' + (h >= 1 ? h + ' 小时' : Math.round(parseInt(exp, 10) / 60) + ' 分钟'));
+  }
+  bits.push('长度 ' + token.length + ' 字符');
+  meta.textContent = bits.join(' · ');
+
+  document.getElementById('copy').addEventListener('click', function () {
+    var btn = this;
+    function done() { btn.textContent = '已复制'; setTimeout(function () { btn.textContent = '复制令牌'; }, 1600); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(token).then(done, fallback);
+    } else { fallback(); }
+    function fallback() {
+      tok.select(); tok.setSelectionRange(0, token.length);
+      try { document.execCommand('copy'); done(); } catch (e) { btn.textContent = '请手动全选复制'; }
+    }
+  });
+
+  document.getElementById('reveal').addEventListener('click', function () {
+    var masked = tok.dataset.masked === '1';
+    if (masked) {
+      tok.value = token;
+      tok.dataset.masked = '0';
+      this.textContent = '隐藏';
+    } else {
+      tok.value = token.slice(0, 12) + '…' + token.slice(-8);
+      tok.dataset.masked = '1';
+      this.textContent = '显示 / 隐藏';
+    }
+  });
+})();
+</script>
+</body>
+</html>
